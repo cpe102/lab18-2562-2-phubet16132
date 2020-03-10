@@ -92,14 +92,16 @@ int main(){
 			if(textline == "---------------------------------------"){
 				state = 1;
 				allcourses.push_back(c);
+				c.lecture_list={};
+				
 			}else{
 				student *p = findstudent(allstudents,atoi(textline.c_str()));
 				c.student_list.push_back(p);
 				//Append student_list;
 			}
+			
 		}
 	}
 	printreport(allcourses);
-
 	
 }
