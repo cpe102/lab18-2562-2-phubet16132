@@ -9,6 +9,10 @@ using namespace std;
 
 struct student{
 	//Define struct student with four member (name ,id , gender, gpa);
+	string name;
+	int id;
+	char gender;
+	double gpa;
 };
 
 struct course{
@@ -18,7 +22,7 @@ struct course{
 	vector<student *> student_list;
 };
 
-student * findstudent(vector<student> allstudents,int key){ //Correct this line
+student * findstudent(vector<student> &allstudents,int key){ //Correct this line
 	for(unsigned int i = 0; i < allstudents.size(); i++){
 		if(allstudents[i].id  == key) return &allstudents[i];
 	}
@@ -55,38 +59,47 @@ int main(){
 	string textline;
 	
 	while(getline(student_file,textline)){
-		student s; 
-	
-		//Assign value to the members of struct s;
-	
+		 
+		char format []="%[^,],%d,%c,%lf";
+		char name[99];
+		int code;
+		char sex;
+		double grade;
+		sscanf(textline.c_str(),format,name,&code,&sex,&grade);
+		student s={name,code,sex,grade};
 		allstudents.push_back(s); 		
 	}
 	
 	int state = 1;
+	course c;
 	while(getline(course_file,textline)){
 		if(state == 1){
-			course c;
+			
 			int loc = textline.find_first_of('(');
 			c.name = textline.substr(0,loc-1);
 			c.id = atof(textline.substr(loc+1,5).c_str());
 			getline(course_file,textline);
-			allcourses.push_back(c);
+			
 			state = 2;			
 		}else if(state == 2){
 			if(textline == "> Students"){
 				state = 3;
 			}else{
 				//Append lecture_list;
+				c.lecture_list.push_back(textline);
 			}			
 		}else{
 			if(textline == "---------------------------------------"){
 				state = 1;
+				allcourses.push_back(c);
 			}else{
-				student *p = findstudent(allstudents,atof(textline.c_str()));
+				student *p = findstudent(allstudents,atoi(textline.c_str()));
+				c.student_list.push_back(p);
 				//Append student_list;
 			}
 		}
 	}
 	printreport(allcourses);
+
 	
 }
